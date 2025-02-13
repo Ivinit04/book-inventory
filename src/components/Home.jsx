@@ -26,8 +26,8 @@ function Home() {
   const bookDelete = (id) => {
     axios
       .delete(`https://67a9e88f65ab088ea7e4ece0.mockapi.io/api/books/${id}`)
-      .then(() => {
-        dispatch(deleteBook(books.id));
+      .then((response) => {
+        dispatch(deleteBook(response.data.id));
       })
       .catch((error) => console.error("Error deleting book:", error));
   };

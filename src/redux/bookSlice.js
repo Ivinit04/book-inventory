@@ -9,10 +9,7 @@ const bookSlice = createSlice({
     updateBook: (state, action) =>
       state.map((book) => (book.id === action.payload.id ? action.payload : book)),
     deleteBook: (state, action) =>
-      state.filter((book) => book.id !== action.payload).map((book, index) => ({
-        ...book,
-        id: (index + 1).toString(),
-      })),
+      state.filter((book) => book.id !== action.payload),
   },
 });
 

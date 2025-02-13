@@ -9,13 +9,17 @@ function Form() {
   const bookData = useSelector((state) =>
     state.books.find((book) => book.id === id)
   );
-  const [book, setBook] = useState(id ? bookData : {
-    title: "",
-    author: "",
-    publishedDate: "",
-    publisher: "",
-    description: "",
-  });
+  const [book, setBook] = useState(
+    id
+      ? bookData
+      : {
+          title: "",
+          author: "",
+          publishedDate: "",
+          publisher: "",
+          description: "",
+        }
+  );
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,13 +31,13 @@ function Form() {
   const validateForm = () => {
     let newErrors = {};
     if (!book.title.trim()) newErrors.title = "Title is required.";
-    if(!book.publishedDate) newErrors.publishedDate = "Date is required";
+    if (!book.publishedDate) newErrors.publishedDate = "Date is required";
     if (!book.author || !/^[a-zA-Z\s.]{4,}$/.test(book.author))
       newErrors.author =
-        "Author must be at least 4 characters long and contain only letters.";
+        "Author must be at least 4 characters long and contain only letters, dot or space.";
     if (!book.publisher || !/^[a-zA-Z\s.,]{4,}$/.test(book.publisher))
       newErrors.publisher =
-        "Publisher must be at least 4 characters long and contain only letters.";
+        "Publisher must be at least 4 characters long and contain only letters, comma , dot or space .";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -62,7 +66,9 @@ function Form() {
 
   return (
     <div className="container mx-auto p-6 bg-white shadow-lg rounded-lg max-w-lg">
-      <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">{id ? "Edit Book" : "Add Book"}</h2>
+      <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
+        {id ? "Edit Book" : "Add Book"}
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -73,17 +79,22 @@ function Form() {
           className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
-        
+
         <input
           type="text"
           name="author"
           value={book.author}
           onChange={handleChange}
+          onInput={(e) => {
+            e.target.value = e.target.value.replace(/[^A-Za-z.\s]/g, ""); // Removes invalid characters
+          }}
           placeholder="Author"
           className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        {errors.author && <p className="text-red-500 text-sm">{errors.author}</p>}
-        
+        {errors.author && (
+          <p className="text-red-500 text-sm">{errors.author}</p>
+        )}
+
         <input
           type="date"
           name="publishedDate"
@@ -91,18 +102,25 @@ function Form() {
           onChange={handleChange}
           className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        {errors.publishedDate && <p className="text-red-500 text-sm">{errors.publishedDate}</p>}
-        
+        {errors.publishedDate && (
+          <p className="text-red-500 text-sm">{errors.publishedDate}</p>
+        )}
+
         <input
           type="text"
           name="publisher"
           value={book.publisher}
           onChange={handleChange}
+          onInput={(e) => {
+            e.target.value = e.target.value.replace(/[^A-Za-z.,\s]/g, ""); // Removes invalid characters
+          }}
           placeholder="Publisher"
           className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        {errors.publisher && <p className="text-red-500 text-sm">{errors.publisher}</p>}
-        
+        {errors.publisher && (
+          <p className="text-red-500 text-sm">{errors.publisher}</p>
+        )}
+
         <textarea
           name="description"
           value={book.description}
@@ -110,7 +128,7 @@ function Form() {
           placeholder="Description"
           className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        
+
         <button
           type="submit"
           className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -119,16 +137,15 @@ function Form() {
         </button>
       </form>
       <div className="mt-4 text-center">
-      <Link
-        to="/"
-        className="w-full inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-      >
-        Back to Home
-      </Link>
-    </div>
+        <Link
+          to="/"
+          className="w-full inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          Back to Home
+        </Link>
+      </div>
     </div>
   );
-  
 }
 
 export default Form;
